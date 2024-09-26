@@ -1,27 +1,26 @@
 import './App.css';
 import {Board} from './Board';
-import { useState, createContext } from 'react';
+import { useState, useContext, createContext } from 'react';
 
 export const BoardContext = createContext(null);
-
-
 
 function emptyBoard(){
   return [...Array(7)].map(() => Array(6).fill(""));
 }
 
+function Announcement() {
+  const boardProps = useContext(BoardContext);
+  let {turn} = boardProps;
+  return (
+    <h1>It is now {turn}'s turn!</h1>
+  );
+}
+
 function App() {
   const [board, setBoard] = useState(emptyBoard());
+  const [moveCount, setMoveCount] = useState(0);
 
-  const addMoveCount = (function() { // Closure Function
-    let moveCount = 0;
-    return function() {
-        moveCount++;
-        console.log(moveCount);
-        if (moveCount >= 7) checkWin();
-        return moveCount;
-    }
-  })();
+  if (moveCount >= 7) checkWin();
   
   function checkWin() {
     // Check Horizontal
@@ -35,12 +34,16 @@ function App() {
 
   const boardProps = {
     board: board,
-    addMoveCount: addMoveCount
-  }
+    moveCount: moveCount,
+    setMoveCount: setMoveCount,
+    turn: moveCount % 2 == 0 ? "Y" : "R"
+  };
 
   return (
     <div className="App">
+      
       <BoardContext.Provider value={boardProps}>
+        <Announcement />
         <Board/>
       </BoardContext.Provider>
     </div>

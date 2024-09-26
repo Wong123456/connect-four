@@ -14,7 +14,7 @@ function Cell({value}){
 
 function Col({colId}){
     const boardProps = useContext(BoardContext);
-    const {board, addMoveCount} = boardProps;
+    const {board, moveCount, setMoveCount, turn} = boardProps;
     const [col, setCol] = useState(board[colId]);
 
     function updateCol(col){
@@ -24,9 +24,9 @@ function Col({colId}){
     function addMarkToCol(){
         if (canMark(col) !== -1){
             let colCopy = structuredClone(col);
-            colCopy[canMark(col)] = "⦿";
+            colCopy[canMark(col)] = turn;
             updateCol(colCopy);
-            addMoveCount();
+            setMoveCount(moveCount+1);
         }
     }
 
