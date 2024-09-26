@@ -14,18 +14,19 @@ function Cell({value}){
 
 function Col({colId}){
     const boardProps = useContext(BoardContext);
-    const {board, moveCount, setMoveCount, turn} = boardProps;
+    const {board, setBoard, moveCount, setMoveCount, turn} = boardProps;
     const [col, setCol] = useState(board[colId]);
-
-    function updateCol(col){
-        setCol([...col]);
-    }
 
     function addMarkToCol(){
         if (canMark(col) !== -1){
             let colCopy = structuredClone(col);
+            let newBoard = structuredClone(board);
+
             colCopy[canMark(col)] = turn;
-            updateCol(colCopy);
+            newBoard[colId] = colCopy;
+            
+            setBoard(newBoard);
+            setCol([...colCopy]);
             setMoveCount(moveCount+1);
         }
     }
