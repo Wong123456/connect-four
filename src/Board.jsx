@@ -9,12 +9,15 @@ function canMark(col){
 }
 
 function Cell({colId, row}){
-    return <div className="cell">{colId}, {row}</div>;
+    const boardProps = useContext(BoardContext);
+    const {board, turn, incrementTurn, mark} = boardProps;
+    return <div className="cell">{colId}, {row}, {mark}</div>;
 }
 
 function Col({colId}){
     const boardProps = useContext(BoardContext);
-    const {board} = boardProps;
+    const {board, turn, incrementTurn, mark} = boardProps;
+
     const [col, setCol] = useState(board[colId]);
 
     function updateCol(col){
@@ -28,8 +31,10 @@ function Col({colId}){
     function addMarkToCol(){
         if (canMark(col) !== -1){
             let colCopy = structuredClone(col);
-            colCopy[canMark(col)] = "marked";
+            colCopy[canMark(col)] = mark;
             updateCol(colCopy);
+            console.log(mark);
+            incrementTurn();
         }
     }
 
