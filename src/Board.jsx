@@ -3,49 +3,47 @@ import { BoardContext } from "./App";
 
 function canMark(col){
     for (let i = 0; i < col.length; i++) {
-        if (col[i] !== "null") return i - 1;
+        if (col[i] !== "") return i - 1;
     }
     return col.length - 1;
 }
 
-function Cell({colId, row}){
-    return <div className="cell">{colId}, {row}</div>;
+function Cell({value}){
+    return <div className="cell">{value}</div>;
 }
 
 function Col({colId}){
     const boardProps = useContext(BoardContext);
-    const {board} = boardProps;
+    const {board, addMoveCount} = boardProps;
     const [col, setCol] = useState(board[colId]);
 
     function updateCol(col){
         setCol([...col]);
     }
 
-    function testCanMark(){
-        console.log(canMark(col));
-    }
-
     function addMarkToCol(){
         if (canMark(col) !== -1){
             let colCopy = structuredClone(col);
-            colCopy[canMark(col)] = "marked";
+            colCopy[canMark(col)] = "⦿";
             updateCol(colCopy);
+            addMoveCount();
         }
     }
 
-    useEffect(() =>{
-        console.log(col);
-    }, [col])
-
     function addCell(row){
         if (row >= 6) return [];
-        return [<Cell colId={colId} row={row}/>, ...addCell(row + 1)];
+        return [<Cell colId={colId} row={row} value={col[row]}/>, ...addCell(row + 1)];
     }
-    return <div className="column" onClick={addMarkToCol}>{addCell(0)}</div>;
+
+    return (
+        <div className="column" onClick={addMarkToCol}>
+            {addCell(0)}
+        </div>
+    );
 }
 
 export function Board() {
-    //6rows 7cols
+    // 6 Rows, 7 Columns
     function addCol(colId){
         if (colId >= 7) return [];
         return [<Col colId={colId}/>, ...addCol(colId + 1)];
