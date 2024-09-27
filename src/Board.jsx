@@ -8,17 +8,21 @@ function canMark(col){
     return col.length - 1;
 }
 
-function Cell({value}){
-    return <div className="cell">{value}</div>;
+function Cell({colId, row}){
+    const boardProps = useContext(BoardContext);
+    const {board} = boardProps;
+
+    return <div className="cell">{board[colId][row]}</div>;
 }
 
 function Col({colId}){
     const boardProps = useContext(BoardContext);
-    const {board, setBoard, moveCount, setMoveCount, turn} = boardProps;
-    const [col, setCol] = useState(board[colId]);
+    const {board, setBoard, moveCount, setMoveCount, turn, winner} = boardProps;
+
+    let col = board[colId];
 
     function addMarkToCol(){
-        if (canMark(col) !== -1){
+        if (canMark(col) !== -1 && winner == ""){
             let colCopy = structuredClone(col);
             let newBoard = structuredClone(board);
 
@@ -26,14 +30,14 @@ function Col({colId}){
             newBoard[colId] = colCopy;
             
             setBoard(newBoard);
-            setCol([...colCopy]);
+            col = [...colCopy];
             setMoveCount(moveCount+1);
         }
     }
 
     function addCell(row){
         if (row >= 6) return [];
-        return [<Cell colId={colId} row={row} value={col[row]}/>, ...addCell(row + 1)];
+        return [<Cell colId={colId} row={row}/>, ...addCell(row + 1)];
     }
 
     return (

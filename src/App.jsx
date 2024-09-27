@@ -8,26 +8,57 @@ function emptyBoard(){
   return [...Array(7)].map(() => Array(6).fill(""));
 }
 
-function Announcement() {
+function Announcement(){
+  //anc == announcement
+  const [anc, setAnc] = useState("");
+
   const boardProps = useContext(BoardContext);
-  let {turn} = boardProps;
-  return (
-    <h1>It is now {turn}'s turn!</h1>
-  );
+  let {moveCount, turn, winner} = boardProps;
+
+  function handleAnc(){
+    if (winner == "") {
+    return "Turn " + moveCount + ", " + turn + "'s move!";
+    }
+    else {
+      return winner + " won!";
+    }
+  }
+
+  return <h1>{handleAnc()}</h1>
+}
+
+function RestartButton(){
+  const props = useContext(BoardContext);
+  let {newGame, setNewGame} = props;
+
+  function restart() {
+      setNewGame(true);
+  }
+
+  return <button onClick={restart}>Restart</button>
 }
 
 function App() {
   const [board, setBoard] = useState(emptyBoard());
-  const [winner, setWinner] = useState();
-  const [moveCount, setMoveCount] = useState(0);
+  const [winner, setWinner] = useState("");
+  const [moveCount, setMoveCount] = useState(1);
+  const [newGame, setNewGame] = useState(false);
 
   useEffect(() => {
     if (moveCount >= 7) checkWin();
+    console.log(board);
   }, [board])
   
   useEffect(() => {
     if (winner) winner == "Y" ? console.log("Yellow") : console.log("Red");
   }, [winner])
+
+  if (newGame) {
+    setBoard(emptyBoard());
+    setWinner("");
+    setMoveCount(1);
+    setNewGame(false);
+  }
 
   function checkHorizontal() {
     let sameColor = 1;
@@ -137,7 +168,10 @@ function App() {
     setBoard: setBoard,
     moveCount: moveCount,
     setMoveCount: setMoveCount,
-    turn: moveCount % 2 == 0 ? "Y" : "R"
+    turn: moveCount % 2 == 0 ? "Y" : "R",
+    winner: winner,
+    newGame: newGame,
+    setNewGame: setNewGame,
   };
 
   return (
@@ -145,25 +179,11 @@ function App() {
       
       <BoardContext.Provider value={boardProps}>
         <Announcement />
-        <Board/>
+        <Board />
+        <RestartButton />
       </BoardContext.Provider>
     </div>
   );
 }
 
 export default App;
-
-
-function Announcement(){
-  //anc == announcement
-  const [anc, setAnc] = useState("");
-
-  const boardProps = useContext(BoardContext);
-  let {turn, mark} = boardProps;
-
-  function handleAnc(){
-    return "Turn " + turn + ", " + mark + "'s turn!";
-  }
-
-  return <h1>{handleAnc()}</h1>
-}
