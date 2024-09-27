@@ -36,7 +36,7 @@ function Col({colId}){
     }
 
     function addCell(row){
-        if (row >= 6) return [];
+        if (row >= board[0].length) return [];
         return [<Cell colId={colId} row={row}/>, ...addCell(row + 1)];
     }
 
@@ -48,9 +48,11 @@ function Col({colId}){
 }
 
 export function Board() {
+    const boardProps = useContext(BoardContext);
+    const {board} = boardProps;
     // 6 Rows, 7 Columns
     function addCol(colId){
-        if (colId >= 7) return [];
+        if (colId >= board.length) return [];
         return [<Col colId={colId}/>, ...addCol(colId + 1)];
     }
     return <div className="board">{addCol(0)}</div>

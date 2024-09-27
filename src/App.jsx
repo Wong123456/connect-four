@@ -4,8 +4,8 @@ import { useState, useEffect, useContext, createContext } from 'react';
 
 export const BoardContext = createContext(null);
 
-function emptyBoard(){
-  return [...Array(7)].map(() => Array(6).fill(""));
+function emptyBoard(col = 7, row = 6){
+  return [...Array(col)].map(() => Array(row).fill(""));
 }
 
 function Announcement(){
@@ -44,9 +44,10 @@ function App() {
   const [moveCount, setMoveCount] = useState(1);
   const [newGame, setNewGame] = useState(false);
 
-  useEffect(() => {
-    if (moveCount >= 7) checkWin();
-    console.log(board);
+  const width = board.length, height = board[0].length; // Col, Row
+
+  useEffect(() => { // Check Win every move if the move is at least 7.
+    if (moveCount >= 7) checkHorizontal() || checkVertical() || checkDiag1() || checkDiag2();
   }, [board])
   
   useEffect(() => {
@@ -60,11 +61,18 @@ function App() {
     setNewGame(false);
   }
 
-  function checkHorizontal() {
+  if (newGame) {
+    setBoard(emptyBoard());
+    setWinner("");
+    setMoveCount(1);
+    setNewGame(false);
+  }
+
+  function checkHorizontal() { // Check Horizontal Columns
     let sameColor = 1;
-    for (let r = 0; r < 6; r++) {
+    for (let r = 0; r < height; r++) {
       sameColor = 1;
-      for (let c = 0; c < 6; c++) {
+      for (let c = 0; c < width-1; c++) {
         board[c][r] != "" && board[c][r] == board[c+1][r] ? sameColor++ : sameColor = 1;
         if (sameColor == 4) {
           setWinner(board[c][r]);
@@ -75,11 +83,11 @@ function App() {
     return false;
   }
 
-  function checkVertical() {
+  function checkVertical() { // Check Vertical Columns
     let sameColor = 1;
-    for (let c = 0; c < 6; c++) {
+    for (let c = 0; c < width; c++) {
       sameColor = 1;
-      for (let r = 5; r > 0; r--) {
+      for (let r = height-1; r > 0; r--) {
         board[c][r] != "" && board[c][r] == board[c][r-1] ? sameColor++ : sameColor = 1;
         if (sameColor == 4) {
           setWinner(board[c][r]);
@@ -93,9 +101,9 @@ function App() {
   function checkDiag1() { // Quadrant I & Quadrant III
     let sameColor = 1;
 
-    for (let r = 3; r < 6; r++) { // TOP-LEFT SIDE
+    for (let r = 3; r < height; r++) { // TOP-LEFT SIDE
       sameColor = 1;
-      for (let i = 0, j = r; j > 0; i++, j--) {
+      for (let i = 0, j = r; i < width-1 && j > 0; i++, j--) {
         board[i][j] != "" && board[i][j] == board[i+1][j-1] ? sameColor++ : sameColor = 1;
         if (sameColor == 4) {
           setWinner(board[i][j]);
@@ -104,9 +112,9 @@ function App() {
       }
     }
 
-    for (let c = 1; c < 4; c++) { // BOTTOM-RIGHT SIDE
+    for (let c = 1; c < width-3; c++) { // BOTTOM-RIGHT SIDE
       sameColor = 1;
-      for (let i = c, j = 5; i < 6; i++, j--) {
+      for (let i = c, j = height-1; i < width-1 && j > 0; i++, j--) {
         board[i][j] != "" && board[i][j] == board[i+1][j-1] ? sameColor++ : sameColor = 1;
         if (sameColor == 4) {
           setWinner(board[i][j]);
@@ -121,9 +129,9 @@ function App() {
   function checkDiag2() { // Quadrant II & Quadrant IV
     let sameColor = 1;
 
-    for (let c = 3; c <= 6; c++) { // BOTTOM-LEFT SIDE
+    for (let c = 3; c < width; c++) { // BOTTOM-LEFT SIDE
       sameColor = 1;
-      for (let i = c, j = 5; i > 0; i--, j--) {
+      for (let i = c, j = height-1; i > 0 && j > 0; i--, j--) {
         board[i][j] != "" && board[i][j] == board[i-1][j-1] ? sameColor++ : sameColor = 1;
         if (sameColor == 4) {
           setWinner(board[i][j]);
@@ -132,9 +140,9 @@ function App() {
       }
     }
 
-    for (let r = 5; r >= 3; r--) { // TOP-RIGHT SIDE
+    for (let r = height-1; r >= 3; r--) { // TOP-RIGHT SIDE
       sameColor = 1;
-      for (let i = 6, j = r; j > 0; i--, j--) {
+      for (let i = width-1, j = r; i > 0 && j > 0; i--, j--) {
         board[i][j] != "" && board[i][j] == board[i-1][j-1] ? sameColor++ : sameColor = 1;
         if (sameColor == 4) {
           setWinner(board[i][j]);
@@ -144,23 +152,6 @@ function App() {
     }
     
     return false;
-  }
-
-  function checkWin() {
-    let winStatus = false;
-    // Check Horizontal
-    winStatus = checkHorizontal();
-
-    // Check Vertical
-    winStatus = checkVertical();
-
-    // Check Quadrant I & III Diagonal
-    winStatus = checkDiag1();
-
-    // Check Quadrant II & IV Diagonal
-    winStatus = checkDiag2();
-
-    return winStatus;
   }
 
   const boardProps = {
@@ -176,7 +167,6 @@ function App() {
 
   return (
     <div className="App">
-      
       <BoardContext.Provider value={boardProps}>
         <Announcement />
         <Board />
