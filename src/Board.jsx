@@ -8,11 +8,26 @@ function canMark(col){
     return col.length - 1;
 }
 
+function Red(){
+    return <span className="red"></span>
+}
+
+function Yellow(){
+    return <span className="yellow"></span>
+}
+
 function Cell({colId, row}){
     const boardProps = useContext(BoardContext);
-    const {board} = boardProps;
+    const {board} = boardProps;    
+    const [mark, setMark] = useState("");
 
-    return <div className="cell">{board[colId][row]}</div>;
+    useEffect(() =>{
+        if (board[colId][row] == "Red") {setMark(<Red />);}
+        if (board[colId][row] == "Yellow") {setMark(<Yellow />);}
+        if (board[colId][row] == "") {setMark("");}
+    }, [board[colId][row]])
+
+    return <div className="cell">{mark}</div>
 }
 
 function Col({colId}){

@@ -134,7 +134,7 @@ function App() {
       for (let i = c, j = height-1; i > 0 && j > 0; i--, j--) {
         board[i][j] != "" && board[i][j] == board[i-1][j-1] ? sameColor++ : sameColor = 1;
         if (sameColor == 4) {
-          setWinner(board[i][j]);
+           setWinner(board[i][j]);
           return true;
         }
       }
@@ -159,7 +159,7 @@ function App() {
     setBoard: setBoard,
     moveCount: moveCount,
     setMoveCount: setMoveCount,
-    turn: moveCount % 2 == 0 ? "Y" : "R",
+    turn: moveCount % 2 == 0 ? "Yellow" : "Red",
     winner: winner,
     newGame: newGame,
     setNewGame: setNewGame,
