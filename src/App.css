@@ -8,11 +8,13 @@
   border: 1px solid black;
   vertical-align: middle;
   line-height: 100px;
+  font-size: 80px;
 }
 
 .column {
   align-items: center;
   display: inline-block;
+  vertical-align: top;
 }
 
 .board {
