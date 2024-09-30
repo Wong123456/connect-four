@@ -14,23 +14,32 @@ function Cell({colId, row}){
     const [mark, setMark] = useState("");
 
     const margins = {
-        0: "-200px",
-        1: "-300px",
-        2: "-400px",
-        3: "-500px",
-        4: "-600px",
-        5: "-700px"
+        "default": -700,
+        0: -200,
+        1: -300,
+        2: -400,
+        3: -500,
+        4: -600,
+        5: -700
     }
 
-    document.documentElement.style.setProperty('--start-margin', margins[row])
+    const dropTime = margins[row] / margins["default"] * 0.5;
+    const bounceTime = margins[row] / margins["default"] * 0.3;
+    const drop2Time = dropTime + bounceTime;
+    const ratio = margins[row] / margins["default"];
 
+
+    document.documentElement.style.setProperty('--start-margin', margins[row])
+ 
     useEffect(() =>{
         if (board[colId][row] == "Red") {setMark("red");}
         if (board[colId][row] == "Yellow") {setMark("yellow");}
         if (board[colId][row] == "") {setMark("");}
     }, [board[colId][row]])
 
-    return <div className="cell"><div className={mark} style={{'--start-margin': margins[row],}}></div></div>
+    return <div className="cell"><div className={mark} style={
+        {'--start-margin': margins[row] + "px", '--ratio': ratio,
+        }}></div></div>
 }
 
 function Col({colId}){

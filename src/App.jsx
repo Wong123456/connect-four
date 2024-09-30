@@ -15,13 +15,11 @@ function Announcement(){
   const boardProps = useContext(BoardContext);
   let {moveCount, turn, winner} = boardProps;
 
-  function handleAnc(){
-    if (winner == "") {
-    return "Turn " + moveCount + ", " + turn + "'s move!";
-    }
-    else {
-      return winner + " won!";
-    }
+  
+function handleAnc(){
+  let returnStr = winner + " won!";
+  if (winner == "") returnStr = `Turn ${moveCount} ,   ${turn}'s move!`;
+  return returnStr
   }
 
   return <h1>{handleAnc()}</h1>

@@ -1,9 +1,11 @@
 .App {
   text-align: center;
-  --start-margin: -1000px;
+  --start-margin: -700px;
+  --bounce-height: -200px;
   --drop-time: 0.5s;
   --bounce-time: 0.3s;
   --drop2-time: 0.8s;
+  --ratio: 1;
 }
 
 @keyframes drop {
@@ -13,11 +15,11 @@
  
 @keyframes bounce {
   0% {margin-top: 0px;}
-  100% {margin-top: -200px;}
+  100% {margin-top: calc(var(--bounce-height) * var(--ratio));}
 }
 
 @keyframes drop2 {
-  0% {margin-top: -200px;}
+  0% {margin-top: calc(var(--bounce-height) * var(--ratio));}
   100% {margin-top: 0px;}
 }
 
@@ -31,8 +33,10 @@
   margin-top: 5px;
   margin-left: 5px;
   position: absolute;
-  animation: drop var(--drop-time) ease-in, bounce var(--bounce-time) var(--drop-time) ease-out, drop2 var(--bounce-time) var(--drop2-time) ease-in;
-    animation-iteration-count: 1, 1, 1;
+  animation: drop calc(var(--drop-time) * var(--ratio)) ease-in, 
+  bounce calc(var(--bounce-time) * var(--ratio)) calc(var(--drop-time) * var(--ratio)) ease-out, 
+  drop2 calc(var(--bounce-time) * var(--ratio)) calc(var(--drop2-time) * var(--ratio)) ease-in;
+  animation-iteration-count: 1, 1, 1;
 }
 
 .yellow {
@@ -44,7 +48,9 @@
   margin-top: 5px;
   margin-left: 5px;
   position: absolute;
-  animation: drop 0.5s ease-in, bounce 0.3s 0.5s ease-out, drop2 0.3s 0.8s ease-in;
+  animation: drop calc(var(--drop-time) * var(--ratio)) ease-in, 
+  bounce calc(var(--bounce-time) * var(--ratio)) calc(var(--drop-time) * var(--ratio)) ease-out, 
+  drop2 calc(var(--bounce-time) * var(--ratio)) calc(var(--drop2-time) * var(--ratio)) ease-in;
   animation-iteration-count: 1, 1, 1;
 
 }
