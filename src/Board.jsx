@@ -8,26 +8,29 @@ function canMark(col){
     return col.length - 1;
 }
 
-function Red(){
-    return <span className="red"></span>
-}
-
-function Yellow(){
-    return <span className="yellow"></span>
-}
-
 function Cell({colId, row}){
     const boardProps = useContext(BoardContext);
     const {board} = boardProps;    
     const [mark, setMark] = useState("");
 
+    const margins = {
+        0: "-200px",
+        1: "-300px",
+        2: "-400px",
+        3: "-500px",
+        4: "-600px",
+        5: "-700px"
+    }
+
+    document.documentElement.style.setProperty('--start-margin', margins[row])
+
     useEffect(() =>{
-        if (board[colId][row] == "Red") {setMark(<Red />);}
-        if (board[colId][row] == "Yellow") {setMark(<Yellow />);}
+        if (board[colId][row] == "Red") {setMark("red");}
+        if (board[colId][row] == "Yellow") {setMark("yellow");}
         if (board[colId][row] == "") {setMark("");}
     }, [board[colId][row]])
 
-    return <div className="cell">{mark}</div>
+    return <div className="cell"><div className={mark} style={{'--start-margin': margins[row],}}></div></div>
 }
 
 function Col({colId}){
