@@ -2,10 +2,14 @@
   text-align: center;
   --start-margin: -700px;
   --bounce-height: -200px;
-  --drop-time: 0.5s;
-  --bounce-time: 0.3s;
-  --drop2-time: 0.8s;
+  --drop-time: 0.45s;
+  --bounce-time: 0.2s;
+  --drop2-time: 0.65s;
   --ratio: 1;
+}
+
+.anc {
+  margin-top: 100px;
 }
 
 @keyframes drop {
@@ -22,7 +26,6 @@
   0% {margin-top: calc(var(--bounce-height) * var(--ratio));}
   100% {margin-top: 0px;}
 }
-
 
 .red {
   width: 90px;
@@ -73,5 +76,5 @@
 }
 
 .board {
-  margin-top: 500px;
+  margin-top: 100px;
 }

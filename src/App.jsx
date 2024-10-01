@@ -10,7 +10,6 @@ function emptyBoard(col = 7, row = 6){
 
 function Announcement(){
   //anc == announcement
-  const [anc, setAnc] = useState("");
 
   const boardProps = useContext(BoardContext);
   let {moveCount, turn, winner} = boardProps;
@@ -19,10 +18,11 @@ function Announcement(){
 function handleAnc(){
   let returnStr = winner + " won!";
   if (winner == "") returnStr = `Turn ${moveCount} ,   ${turn}'s move!`;
+  if (moveCount == 43) returnStr = `Board filled, there is no winner!`;
   return returnStr
   }
 
-  return <h1>{handleAnc()}</h1>
+  return <h1 className="anc">{handleAnc()}</h1>
 }
 
 function RestartButton(){

@@ -1,5 +1,23 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { BoardContext } from "./App";
+
+let ratio = 1;
+
+// throttling function => reject a function call if interval is 
+// smaller than delay defined
+const throttle = (fn, delay) => {
+    let lastTime = 0; //closure function, so lastTime will be remembered
+    return (...args) => {
+        let now = new Date().getTime();
+        console.log("Now: " + now);
+        console.log("Last Time: " + lastTime);
+        // calculate the interval, if smaller than delay, do nothing
+        if (now - lastTime < delay) {console.log("not called"); return;}
+        lastTime = now;
+        // call the function and pass the arguments if any
+        fn(...args);
+    };
+};
 
 function canMark(col){
     for (let i = 0; i < col.length; i++) {
@@ -14,20 +32,16 @@ function Cell({colId, row}){
     const [mark, setMark] = useState("");
 
     const margins = {
-        "default": -700,
-        0: -200,
-        1: -300,
-        2: -400,
-        3: -500,
-        4: -600,
-        5: -700
+        "default": -600,
+        0: -100,
+        1: -200,
+        2: -300,
+        3: -400,
+        4: -500,
+        5: -600
     }
 
-    const dropTime = margins[row] / margins["default"] * 0.5;
-    const bounceTime = margins[row] / margins["default"] * 0.3;
-    const drop2Time = dropTime + bounceTime;
-    const ratio = margins[row] / margins["default"];
-
+    ratio = margins[row] / margins["default"];
 
     document.documentElement.style.setProperty('--start-margin', margins[row])
  
@@ -45,10 +59,14 @@ function Cell({colId, row}){
 function Col({colId}){
     const boardProps = useContext(BoardContext);
     const {board, setBoard, moveCount, setMoveCount, turn, winner} = boardProps;
+    const [lastTime, setLastTime] = useState(0);
 
     let col = board[colId];
 
     function addMarkToCol(){
+        console.log(ratio);
+        let now = new Date().getTime();
+        if (now - lastTime < 950 * ratio + 100) return;
         if (canMark(col) !== -1 && winner == ""){
             let colCopy = structuredClone(col);
             let newBoard = structuredClone(board);
@@ -60,6 +78,7 @@ function Col({colId}){
             col = [...colCopy];
             setMoveCount(moveCount+1);
         }
+        setLastTime(now);
     }
 
     function addCell(row){
